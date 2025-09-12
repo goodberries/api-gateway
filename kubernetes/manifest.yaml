@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: api-gateway
-        image: your-docker-registry/api-gateway:latest # <-- IMPORTANT: Change this
+        image: deadvexon/api-gateway:latest # <-- IMPORTANT: Change this
         ports:
         - containerPort: 8000
         env:

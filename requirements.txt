@@ -2,4 +2,4 @@ fastapi
 uvicorn
 httpx
 boto3
-langchain-community
+langchain-aws

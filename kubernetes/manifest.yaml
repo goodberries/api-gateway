@@ -20,6 +20,18 @@ spec:
         env:
         - name: BOT_SERVICE_URL
           value: "http://bot-service:8001" # Kubernetes service name
+        - name: AWS_REGION
+          value: "us-east-1" # Or your preferred region
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: aws-credentials
+              key: aws_access_key_id
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: aws-credentials
+              key: aws_secret_access_key
 ---
 apiVersion: v1
 kind: Service

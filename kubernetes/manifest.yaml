@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+      - name: api-gateway
+        image: your-docker-registry/api-gateway:latest # <-- IMPORTANT: Change this
+        ports:
+        - containerPort: 8000
+        env:
+        - name: BOT_SERVICE_URL
+          value: "http://bot-service:8001" # Kubernetes service name
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-gateway
+spec:
+  type: NodePort # Use NodePort or Ingress in a real cluster
+  selector:
+    app: api-gateway
+  ports:
+  - port: 80
+    targetPort: 8000
+    nodePort: 30007 # Example port, can be omitted to let k8s choose

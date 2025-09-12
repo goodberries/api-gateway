@@ -2,16 +2,21 @@ from fastapi import FastAPI, HTTPException
 import httpx
 import boto3
 import os
-from langchain_community.chat_models import BedrockChat
+from langchain_aws import ChatBedrock  # ✅ preferred import
 
 app = FastAPI()
 
 # In a real app, this would be a more robust service discovery mechanism
-BOT_SERVICE_URL = "http://localhost:8001"
+BOT_SERVICE_URL = "http://bot-service:8001"
 
 # Initialize Bedrock client + LLM
 bedrock_client = boto3.client("bedrock-runtime", region_name=os.getenv("AWS_REGION", "us-east-1"))
-llm = BedrockChat(client=bedrock_client)
+
+# Use ChatBedrock from langchain-aws (future-proof)
+llm = ChatBedrock(
+    client=bedrock_client,
+    model_id="anthropic.claude-3-haiku-20240307-v1:0"
+)
 
 
 @app.post("/chat")

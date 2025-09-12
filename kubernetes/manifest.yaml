@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: api-gateway
-        image: yashwanthydg/api-gateway:latest # <-- IMPORTANT: Change this
+        image: yashwanthydg/api-gateway:v1 # <-- IMPORTANT: Change this
         ports:
         - containerPort: 8000
         env:

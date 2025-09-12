@@ -1,10 +1,27 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 import httpx
 import boto3
 import os
-from langchain_aws import ChatBedrock  # ✅ preferred import
+from langchain_aws import ChatBedrock
 
 app = FastAPI()
+
+# --- CORS Configuration ---
+# Define the list of origins that are allowed to make cross-origin requests.
+# You should restrict this to your actual frontend's URL in a production environment.
+origins = [
+    "http://54.91.235.24:30008",  # The origin from your error message
+    "http://localhost:30008",    # For local testing
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods (GET, POST, etc.)
+    allow_headers=["*"],  # Allows all headers
+)
 
 # In a real app, this would be a more robust service discovery mechanism
 BOT_SERVICE_URL = "http://bot-service:8001"

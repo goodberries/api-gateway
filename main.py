@@ -8,12 +8,9 @@ from langchain_aws import ChatBedrock
 app = FastAPI()
 
 # --- CORS Configuration ---
-# Define the list of origins that are allowed to make cross-origin requests.
-# You should restrict this to your actual frontend's URL in a production environment.
-origins = [
-    "http://54.91.235.24:30008",  # The origin from your error message
-    "http://localhost:30008",    # For local testing
-]
+# For demo purposes, allow all origins.
+# In a production environment, you should restrict this to your actual frontend's URL.
+origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,

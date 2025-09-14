@@ -19,7 +19,7 @@ app.add_middleware(
 # --- Service URLs ---
 # These are the internal Kubernetes service names
 BOT_SERVICE_URL = "http://bot-service:8001"
-FEEDBACK_SERVICE_URL = "http://feedback-service:8002"
+FEEDBACK_SERVICE_URL = "http://feedback-service:8003"
 
 class Feedback(BaseModel):
     interaction_id: str
@@ -51,11 +51,20 @@ async def forward_to_bot_service(request: Request):
 @app.post("/feedback")
 async def forward_to_feedback_service(feedback: Feedback):
     """
-    Receives feedback from the frontend and forwards it to the Feedback Service.
+    Receives feedback from the frontend, transforms it, and forwards it to the Feedback Service.
     """
+    # Translate frontend feedback ('like'/'dislike') to backend score (1/-1)
+    feedback_score = 1 if feedback.feedback == 'like' else -1
+
+    # Create the payload for the feedback service
+    feedback_payload = {
+        "interaction_id": feedback.interaction_id,
+        "feedback_score": feedback_score
+    }
+
     try:
         async with httpx.AsyncClient() as client:
-            response = await client.post(f"{FEEDBACK_SERVICE_URL}/feedback", json=feedback.dict())
+            response = await client.post(f"{FEEDBACK_SERVICE_URL}/feedback", json=feedback_payload)
             response.raise_for_status()
             return response.json()
     except httpx.HTTPStatusError as e:

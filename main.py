@@ -19,7 +19,7 @@ app.add_middleware(
 # --- Service URLs ---
 # These are the internal Kubernetes service names
 BOT_SERVICE_URL = "http://bot-service:8001"
-FEEDBACK_SERVICE_URL = "http://feedback-service:8003"
+FEEDBACK_SERVICE_URL = "http://feedback-service:8002"
 
 class Feedback(BaseModel):
     interaction_id: str

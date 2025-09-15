@@ -38,5 +38,5 @@ jobs:
     steps:
       - name: Deploy to Kubernetes
         run: |
-          kubectl set image deployment/api-gateway=${{ secrets.DOCKERHUB_USERNAME }}/api-gateway:${{ github.sha }}
+          kubectl set image deployment/api-gateway api-gateway=${{ secrets.DOCKERHUB_USERNAME }}/api-gateway:${{ github.sha }}
           echo "Deployment updated successfully!"

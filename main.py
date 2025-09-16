@@ -19,7 +19,7 @@ app.add_middleware(
 # --- Service URLs ---
 # These are the internal Kubernetes service names
 BOT_SERVICE_URL = "http://bot-service:8001"
-FEEDBACK_SERVICE_URL = "http://feedback-service:8002"
+INTERACTIONS_SERVICE_URL = "http://interactions-service:8003"
 
 class Feedback(BaseModel):
     interaction_id: str
@@ -49,31 +49,24 @@ async def forward_to_bot_service(request: Request):
         raise HTTPException(status_code=500, detail=f"Error forwarding request to Bot Service: {str(e)}")
 
 @app.post("/feedback")
-async def forward_to_feedback_service(feedback: Feedback):
+async def forward_to_interactions_service(feedback: Feedback):
     """
-    Receives feedback from the frontend, transforms it, and forwards it to the Feedback Service.
+    Receives feedback from the frontend, transforms it, and forwards it to the Interactions Service.
     """
     # Translate frontend feedback ('like'/'dislike') to backend score (1/-1)
     feedback_score = 1 if feedback.feedback == 'like' else -1
 
-    # Create the payload for the feedback service
-    feedback_payload = {
-        "interaction_id": feedback.interaction_id,
-        "feedback_score": feedback_score
-    }
-
     try:
+        feedback_update_url = f"{INTERACTIONS_SERVICE_URL}/interactions/{feedback.interaction_id}/feedback"
         async with httpx.AsyncClient() as client:
-            response = await client.post(f"{FEEDBACK_SERVICE_URL}/feedback", json=feedback_payload)
+            response = await client.patch(feedback_update_url, json={"feedback_score": feedback_score})
             response.raise_for_status()
             return response.json()
     except httpx.HTTPStatusError as e:
         raise HTTPException(status_code=e.response.status_code, detail=e.response.json())
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error forwarding request to Feedback Service: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error forwarding request to Interactions Service: {str(e)}")
 
 if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)

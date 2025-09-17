@@ -17,7 +17,7 @@ app.add_middleware(
 )
 
 # --- Service URLs ---
-# These are the internal Kubernetes service names
+# These are the internal Kubernetes service names //test
 BOT_SERVICE_URL = "http://bot-service:8001"
 INTERACTIONS_SERVICE_URL = "http://interactions-service:8003"
 
